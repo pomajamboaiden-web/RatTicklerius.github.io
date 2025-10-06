@@ -45,6 +45,22 @@
         console.error("Error loading game:", error);
       }
     }
+    (function() {
+      const backLink = document.getElementById('back-link');
+      if (!backLink) return;
+      backLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        try {
+          if (window.history && window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = backLink.getAttribute('href') || 'index.html';
+          }
+        } catch (err) {
+          window.location.href = backLink.getAttribute('href') || 'index.html';
+        }
+      });
+    })();
   </script>
 </body>
 </html>
