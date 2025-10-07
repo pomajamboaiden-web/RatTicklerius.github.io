@@ -43,4 +43,16 @@ body {
 
 body {
   font-family: 'Poppins', sans-serif;
+  padding-top: 100px;
+}
+
+h1 {
+  display: block;
+  font-size: 5em;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+  color: white;
 }
