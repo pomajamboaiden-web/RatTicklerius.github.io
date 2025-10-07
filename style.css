@@ -1,5 +1,6 @@
 /* From Uiverse.io by Kabak */ 
-button {
+
+/* button {
   height: 50px;
   margin: 5px;
   width: 120px;
@@ -55,4 +56,93 @@ h1 {
   margin-right: 0;
   font-weight: bold;
   color: white;
+} */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: #222;
+  flex: 0 0 auto;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left img {
+  width: 48px;
+  height: 48px;
+  margin-right: 14px;
+}
+
+.navbar-title {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.hero-container {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 80px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.hero-text {
+  max-width: 50%;
+}
+
+.hero-text h1 {
+  font-size: 3.5em;
+  margin-bottom: 18px;
+}
+
+.hero-text p {
+  font-size: 1.45em;
+  margin-bottom: 28px;
+  color: #ddd;
+}
+
+.hero-text .btn {
+  padding: 16px 35px;
+  font-size: 1.25em;
+  font-weight: bold;
+  color: #111;
+  background: #fff;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.hero-text .btn:hover {
+  background: #ccc;
+  transform: scale(1.05);
+}
+
+.hero img {
+  max-width: 420px;
+  border-radius: 10px;
+}
+
