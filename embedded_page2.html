@@ -1,5 +1,5 @@
-
 <!DOCTYPE html>
+<html lang="en">
 <head>
   <style>
     #game-container {
@@ -9,6 +9,7 @@
       overflow: auto;
       background: #000;
     }
+
     #back-link {
       display: block;
       margin: 20px;
@@ -16,11 +17,32 @@
       color: blue;
       text-decoration: none;
     }
+
+    #fullscreen-btn {
+      display: block;
+      margin: 10px 20px;
+      padding: 10px 20px;
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #fullscreen-btn:hover {
+      background-color: #0097a7;
+    }
   </style>
 </head>
 <body>
   <a id="back-link" href="index.html">Go Back</a>
+
+  <!-- 👇 Fullscreen button added here -->
+  <button id="fullscreen-btn" onclick="toggleFullScreen()">Go Fullscreen</button>
+
   <div id="game-container"></div>
+
   <script>
     launch();
 
@@ -45,6 +67,25 @@
         console.error("Error loading game:", error);
       }
     }
+
+    // ✅ Add fullscreen functionality
+    function toggleFullScreen() {
+      const element = document.getElementById("game-container");
+      const button = document.getElementById("fullscreen-btn");
+
+      if (!document.fullscreenElement) {
+        element.requestFullscreen().then(() => {
+          button.textContent = "Exit Fullscreen";
+        }).catch(err => {
+          alert(`Error: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen().then(() => {
+          button.textContent = "Go Fullscreen";
+        });
+      }
+    }
+
     (function() {
       const backLink = document.getElementById('back-link');
       if (!backLink) return;
