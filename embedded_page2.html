@@ -10,36 +10,43 @@
       background: #000;
     }
 
-    #back-link {
-      display: block;
+    .top-buttons {
+      display: flex;
+      gap: 15px;
       margin: 20px;
+    }
+
+    .top-buttons a {
+      font-family: inherit;
       font-size: 20px;
-      color: blue;
-      text-decoration: none;
-    }
-
-    #fullscreen-btn {
-      display: block;
-      margin: 10px 20px;
-      padding: 10px 20px;
-      background-color: #00bcd4;
+      font-weight: normal;
       color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
+      text-decoration: none;
+      padding: 5px 10px;
     }
 
-    #fullscreen-btn:hover {
-      background-color: #0097a7;
+    .top-buttons a:hover {
+      text-decoration: underline;
+    }
+
+    .top-buttons button {
+      font-family: inherit;
+      font-size: 20px;
+      font-weight: normal;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <a id="back-link" href="index.html">Go Back</a>
-
-  <!-- 👇 Fullscreen button added here -->
-  <button id="fullscreen-btn" onclick="toggleFullScreen()">Go Fullscreen</button>
+  <div class="top-buttons">
+    <a id="back-link" href="index.html">Go Back</a>
+    <button id="fullscreen-btn" onclick="toggleFullScreen()">Go Fullscreen</button>
+  </div>
 
   <div id="game-container"></div>
 
@@ -68,7 +75,6 @@
       }
     }
 
-    // ✅ Add fullscreen functionality
     function toggleFullScreen() {
       const element = document.getElementById("game-container");
       const button = document.getElementById("fullscreen-btn");
