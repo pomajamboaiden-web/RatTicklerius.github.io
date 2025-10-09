@@ -5,16 +5,172 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ticklerius Games</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="navbar.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 120px;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 60px;
+      background: #222;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      height: 91vh;
+    }
+
+    .navbar-left img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      margin-bottom: 8px;
+      transform: translateX(0.55vw);
+    }
+
+    .navbar-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .navbar-separator {
+      width: 60px;
+      height: 2px;
+      background: white;
+      margin-bottom: 6px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin: 2px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      background: #444;
+    }
+
+    .navbar a svg, .navbar a img {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .hero-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 80px;
+      min-height: 100vh;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .hero-text {
+      max-width: 50%;
+    }
+
+    .hero-text h1 {
+      font-size: 3.5em;
+      margin-bottom: 18px;
+    }
+
+    .hero-text p {
+      font-size: 1.45em;
+      margin-bottom: 28px;
+      color: #ddd;
+    }
+
+    .hero-text .btn {
+      padding: 16px 35px;
+      font-size: 1.25em;
+      font-weight: bold;
+      color: #111;
+      background: #fff;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: none;
+    }
+
+    .hero img {
+      max-width: 500px;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        margin-left: 0;
+      }
+      .hero-container {
+        padding: 0 20px;
+      }
+      .hero {
+        flex-direction: column;
+        align-items: center;
+      }
+      .hero-text {
+        max-width: 80%;
+        text-align: center;
+      }
+      .hero img {
+        margin-top: 30px;
+        max-width: 80%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="navbar">
-      <div class="navbar-left">
-        <img src="/websiteimages/icon-removebg-preview.png" alt="Icon">
-        <span class="navbar-title">Ticklerius Games</span>
-      </div>
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="/websiteimages/icon-removebg-preview.png" alt="Icon">
     </div>
+    <div class="navbar-top">
+      <div class="navbar-separator"></div>
+      <a href="index.html" title="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </a>
+      <a href="games.html" title="Games">
+        <img src="websiteimages/gamecontrol.svg" width="28" height="28" alt="Games Icon">
+      </a>
+    </div>
+  </div>
 
+  <div class="container">
     <div class="hero-container">
       <div class="hero">
         <div class="hero-text">
