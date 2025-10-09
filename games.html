@@ -40,13 +40,23 @@
       color: white;
       text-decoration: none;
       margin: 15px 0;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      transition: 0.3s;
     }
 
     .navbar a:hover {
-      text-decoration: underline;
+      background: #444;
+    }
+
+    .navbar a svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
     }
 
     .content {
@@ -71,12 +81,14 @@
       display: inline-block;
       margin: 10px;
     }
+
     .game img {
       width: 100%;
       height: 180px;
       object-fit: cover;
       display: block;
     }
+
     .game p {
       margin: 0;
       padding: 12px;
@@ -84,6 +96,7 @@
       font-weight: 600;
       background: #3a3f5c;
     }
+
     .game:hover {
       opacity: 0.9;
     }
@@ -94,13 +107,23 @@
     <div class="navbar-left">
       <img src="/websiteimages/icon-removebg-preview.png" alt="Icon">
     </div>
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
+
+    <a href="index.html" title="Home">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    </a>
+
+    <a href="games.html" title="Games">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M6 12c0 .55.45 1 1 1h2v2c0 .55.45 1 1 1s1-.45 1-1v-2h2c.55 0 1-.45 1-1s-.45-1-1-1h-2V8c0-.55-.45-1-1-1s-1 .45-1 1v2H7c-.55 0-1 .45-1 1zM21 10c0 1.1-.9 2-2 2h-1.5c-.83 0-1.5.67-1.5 1.5V15c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2v-2.5c0-.83-.67-1.5-1.5-1.5H21c.55 0 1-.45 1-1s-.45-1-1-1z"/>
+      </svg>
+    </a>
   </div>
 
   <div class="content">
     <a href="embedded_page2.html" class="game">
-      <img src="data:image/png;base64,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" alt="Deltarune">
+      <img src="data:image/png;base64,iVBORw0K..." alt="Deltarune">
       <p>Deltarune</p>
     </a>
   </div>
