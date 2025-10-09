@@ -7,14 +7,58 @@
   <style>
     body {
       margin: 0;
-      background: #1e1e2f;
       font-family: Arial, sans-serif;
+      background: #111;
       color: white;
+      display: flex;
+      min-height: 100vh;
     }
+
+    .navbar {
+      position: fixed;
+      top: 20px;
+      bottom: 20px;
+      left: 20px;
+      width: 80px;
+      background: #222;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      z-index: 1000;
+    }
+
+    .navbar-left img {
+      width: 48px;
+      height: 48px;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin: 15px 0;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      text-decoration: underline;
+    }
+
     .content {
+      margin-left: 120px;
       padding: 20px;
-      text-align: center;
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
     }
+
     .game {
       width: 200px;
       border-radius: 12px;
@@ -24,7 +68,6 @@
       cursor: pointer;
       text-decoration: none;
       color: white;
-      font-family: Arial, sans-serif;
       display: inline-block;
       margin: 10px;
     }
@@ -47,7 +90,13 @@
   </style>
 </head>
 <body>
-  <div id="navbar-placeholder"></div>
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="/websiteimages/icon-removebg-preview.png" alt="Icon">
+    </div>
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+  </div>
 
   <div class="content">
     <a href="embedded_page2.html" class="game">
@@ -55,13 +104,5 @@
       <p>Deltarune</p>
     </a>
   </div>
-
-  <script>
-    fetch("navbar.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("navbar-placeholder").innerHTML = data;
-      });
-  </script>
 </body>
 </html>
