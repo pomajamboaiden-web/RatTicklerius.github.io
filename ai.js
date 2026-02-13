@@ -1,91 +1,119 @@
-/* --- AI DATA --- */
-let diddyPos = 3; // Starts in POOL (Index 3)
-let attackTimeout = null;
-let blockCounter = null;
+let diddyPos = 3; 
+let joePos = -1;
+let joeInVents = false;
 
-// RANDOMIZED MOVEMENT LOOP
 setInterval(() => {
-    // 30% chance to move every 5 seconds
-    if (Math.random() < 0.3) {
+    // Diddy Move
+    if (Math.random() < 0.4) {
         let lastPos = diddyPos;
-        
-        if (diddyPos === 3) {
-            // STEP 1: Move from Pool to any roaming room
-            const startRoam = [0, 1, 4, 5];
-            diddyPos = startRoam[Math.floor(Math.random() * startRoam.length)];
-        } 
-        else if (diddyPos === 2) {
-            // STEP 3: From Bathroom, guaranteed move to Office
-            diddyPos = 6;
-            onDiddyArrive();
-        } 
+        if (diddyPos === 3) diddyPos = [0, 1, 4, 5][Math.floor(Math.random() * 4)];
+        else if (diddyPos === 2) { diddyPos = 6; onDiddyArrive(); }
         else if (diddyPos < 6) {
-            // STEP 2: Roaming. 40% chance to enter Bathroom (The kill-zone)
-            if (Math.random() < 0.4) {
-                diddyPos = 2; 
-            } else {
-                // Else move to another random room
-                const otherRooms = [0, 1, 4, 5].filter(r => r !== diddyPos);
-                diddyPos = otherRooms[Math.floor(Math.random() * otherRooms.length)];
-            }
+            if (Math.random() < 0.3) diddyPos = 2;
+            else diddyPos = [0, 1, 4, 5].filter(r => r !== diddyPos)[Math.floor(Math.random() * 3)];
         }
-
-        // Trigger static if the player is watching the active change
-        if (isMonUp && activeCam === lastPos) noiseEffect(600);
-        updateCams();
+        if (diddyPos !== lastPos) noiseEffect(400);
     }
-}, 5000);
 
-/* --- ATTACK LOGIC --- */
+    // Joe Move (Night 2)
+    if (night >= 2 && joePos === -1 && Math.random() < 0.3) {
+        joePos = 5;
+    } else if (joePos === 5 && !let diddyPos = 3; 
+let joePos = -1;
+let joeInVents = false;
+
+setInterval(() => {
+    // Diddy Move (Every 20s)
+    if (Math.random() < 0.4) {
+        let lastPos = diddyPos;
+        if (diddyPos === 3) diddyPos = [0, 1, 4, 5][Math.floor(Math.random() * 4)];
+        else if (diddyPos === 2) { diddyPos = 6; onDiddyArrive(); }
+        else if (diddyPos < 6) {
+            if (Math.random() < 0.3) diddyPos = 2;
+            else diddyPos = [0, 1, 4, 5].filter(r => r !== diddyPos)[Math.floor(Math.random() * 3)];
+        }
+        // STATIC ON MOVEMENT
+        if (diddyPos !== lastPos) noiseEffect(400);
+    }
+
+    // Joe Move
+    if (night >= 2 && joePos === -1 && Math.random() < 0.3) {
+        joePos = 5;
+    } else if (joePos === 5 && !joeInVents && Math.random() < 0.4) {
+        joeInVents = true;
+        setTimeout(() => {
+            if (!ventsClosed) triggerJumpscare('joe');
+            else { joePos = -1; joeInVents = false; updateCams(); }
+        }, 10000);
+    }
+    updateCams();
+}, 20000);
 
 function onDiddyArrive() {
-    // Make the cutout appear in the hallway
     document.getElementById('diddy-at-door').style.display = "block";
-    
-    // 3-SECOND REACTION WINDOW
-    attackTimeout = setTimeout(() => {
-        if (!isDoorDown) {
-            triggerJumpscare();
+    setTimeout(() => {
+        if (!isDoorDown) triggerJumpscare('diddy');
+        else {
+            setTimeout(() => {
+                diddyPos = 3;
+                document.getElementById('diddy-at-door').style.display = "none";
+                updateCams();
+            }, 5000);
         }
-    }, 3000);
+    }, 5000);
 }
-
-// 5-SECOND "DOOR HOLD" RETREAT CHECK
-setInterval(() => {
-    if (diddyPos === 6) {
-        if (isDoorDown) {
-            if (!blockCounter) {
-                blockCounter = setTimeout(() => {
-                    clearTimeout(attackTimeout);
-                    diddyPos = 3; // Reset Diddy back to the pool
-                    document.getElementById('diddy-at-door').style.display = "none";
-                    blockCounter = null;
-                    updateCams();
-                }, 5000);
-            }
-        } else {
-            // If door is opened, reset the retreat timer
-            clearTimeout(blockCounter);
-            blockCounter = null;
-        }
-    }
-}, 100);
-
-/* --- RENDERING --- */
 
 function updateCams() {
-    const cutoutOnCam = document.getElementById('diddy-camera');
-    if (isMonUp && activeCam === diddyPos && diddyPos < 6) {
-        cutoutOnCam.style.display = "block";
-    } else {
-        cutoutOnCam.style.display = "none";
-    }
+    document.getElementById('diddy-camera').style.display = (activeCam === diddyPos) ? "block" : "none";
+    document.getElementById('joe-camera').style.display = (activeCam === joePos && !joeInVents) ? "block" : "none";
+    const warn = document.getElementById('vent-warning');
+    if (warn) warn.style.display = (activeCam === 5 && joeInVents) ? "inline" : "none";
 }
 
-function triggerJumpscare() {
-    const scare = document.getElementById('scare-screen');
-    scare.style.display = "flex";
+function triggerJumpscare(who) {
+    playSnd('snd-jumpscare', 1.0);
+    const screen = document.getElementById('scare-screen');
+    const img = document.getElementById('jumpscare-img');
+    img.src = who === 'joe' ? 'https://thehill.com/wp-content/uploads/sites/2/2023/10/bidenjoe_070723gn06-1.png' : 'https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png';
+    screen.style.display = "flex";
+    setTimeout(() => location.reload(), 2500);
+}joeInVents && Math.random() < 0.4) {
+        joeInVents = true;
+        setTimeout(() => {
+            if (!ventsClosed) triggerJumpscare('joe');
+            else { joePos = -1; joeInVents = false; updateCams(); }
+        }, 10000);
+    }
+    updateCams();
+}, 20000);
+
+function onDiddyArrive() {
+    document.getElementById('diddy-at-door').style.display = "block";
     setTimeout(() => {
-        location.reload();
-    }, 2000);
+        if (!isDoorDown) triggerJumpscare('diddy');
+        else {
+            setTimeout(() => {
+                diddyPos = 3;
+                document.getElementById('diddy-at-door').style.display = "none";
+                updateCams();
+            }, 5000);
+        }
+    }, 5000);
 }
+
+function updateCams() {
+    document.getElementById('diddy-camera').style.display = (activeCam === diddyPos) ? "block" : "none";
+    document.getElementById('joe-camera').style.display = (activeCam === joePos && !joeInVents) ? "block" : "none";
+    const warn = document.getElementById('vent-warning');
+    if (warn) warn.style.display = (activeCam === 5 && joeInVents) ? "inline" : "none";
+}
+
+function triggerJumpscare(who) {
+    playSnd('snd-jumpscare', 1.0);
+    const screen = document.getElementById('scare-screen');
+    const img = document.getElementById('jumpscare-img');
+    img.src = who === 'joe' ? 'https://thehill.com/wp-content/uploads/sites/2/2023/10/bidenjoe_070723gn06-1.png' : 'https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png';
+    screen.style.display = "flex";
+    setTimeout(() => location.reload(), 2000);
+}
+
