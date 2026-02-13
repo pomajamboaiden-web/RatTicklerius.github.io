@@ -5,296 +5,287 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diddy's Night Shift | Official</title>
     <style>
-        :root {
-            --fnaf-red: #c41e3a;
-            --fnaf-green: #2ecc71;
-            --gold: #d4af37;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: black; color: white; font-family: 'Courier New', Courier, monospace;
+            width: 100%; height: 100%; background: black; 
+            color: white; font-family: 'Courier New', monospace; 
             overflow: hidden; user-select: none;
         }
 
-        /* --- VISUAL FILTERS --- */
-        #crt { position: fixed; inset: 0; z-index: 1000; pointer-events: none; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0,0,0,0.1) 50%), linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,0,255,0.02)); background-size: 100% 3px, 3px 100%; }
-        #static { position: fixed; inset: 0; z-index: 800; pointer-events: none; opacity: 0; background: url('https://upload.wikimedia.org/wikipedia/commons/5/5a/Static_noise.png'); transition: opacity 0.1s; }
+        /* --- CLASSIC MAIN MENU --- */
+        #main-menu {
+            position: fixed; inset: 0; background: black; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; padding-left: 5%;
+        }
+        #menu-content h1 { font-size: 5rem; line-height: 0.8; text-transform: uppercase; margin-bottom: 30px; }
+        #menu-options p { font-size: 2.2rem; cursor: pointer; margin: 15px 0; color: #888; transition: 0.2s; }
+        #menu-options p:hover { color: #d4af37; transform: translateX(10px); text-shadow: 0 0 10px white; }
+        #menu-diddy { position: absolute; right: 0; bottom: 0; height: 100%; filter: brightness(0.2); z-index: 9998; pointer-events: none; }
+
+        /* --- INFO PANEL --- */
+        #info-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 500px; background: #111; border: 4px solid #d4af37; padding: 30px;
+            z-index: 10005; display: none; line-height: 1.6;
+        }
+
+        /* --- VICTORY SCREEN --- */
+        #victory-screen {
+            position: fixed; inset: 0; background: black; z-index: 20000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #victory-text { font-size: 8rem; color: white; animation: glow 2s infinite; }
+        @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* --- THE OFFICE --- */
-        #office {
-            width: 100vw; height: 100vh;
+        #office { 
+            position: relative; width: 100vw; height: 100vh; 
             background: url('https://cdn.decorpad.com/photos/2022/01/24/m_master-bath-white-double-doors.jpeg') center/cover;
-            display: flex; align-items: center; justify-content: center; position: relative;
+            display: flex; align-items: center; justify-content: center;
         }
+        
+        .door-control-case {
+            position: absolute; left: 5%; bottom: 30%;
+            width: 80px; height: 120px; background: #2a2a2a; border: 4px solid #111;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-around;
+        }
+        #door-btn { width: 50px; height: 50px; background: #600; border: 4px solid #333; border-radius: 50%; cursor: pointer; }
+        #door-btn.active { background: #f00; box-shadow: 0 0 15px #f00; }
 
-        /* DIDDY IN HALLWAY (FIXED POSITIONING) */
-        #diddy-at-door {
-            position: absolute; left: 40%; top: 10%; height: 85%; width: auto;
-            z-index: 5; display: none; pointer-events: none;
-            filter: brightness(0.2) contrast(1.5) drop-shadow(0 0 20px black);
-        }
-
-        #door-frame {
-            position: absolute; top: 0; left: 25%; width: 50%; height: 85%;
-            overflow: hidden; z-index: 10; border-bottom: 5px solid #111;
-        }
-
-        #sliding-door {
-            width: 100%; height: 100%; background: #222;
-            border-bottom: 25px solid #111;
-            transform: translateY(-100%);
-            transition: transform 0.4s cubic-bezier(0.1, 0.7, 1.0, 0.1);
-        }
+        #door-area { position: relative; width: 45%; height: 85%; border: 10px solid #222; overflow: hidden; }
+        #sliding-door { position: absolute; inset: 0; background: #151515; transform: translateY(-100%); transition: 0.5s; z-index: 3; }
         #sliding-door.closed { transform: translateY(0); }
 
-        .btn-panel { position: absolute; bottom: 50px; z-index: 100; }
-        .door-btn {
-            width: 140px; height: 70px; background: #333; color: white; 
-            border: 4px solid #555; font-size: 1.5rem; font-weight: bold; cursor: pointer;
+        /* --- MONITOR --- */
+        #monitor { 
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; 
+            background: black; z-index: 2000; transition: 0.3s; border-top: 5px solid #333;
         }
-        .door-btn.active { background: var(--fnaf-red); border-color: white; box-shadow: 0 0 20px var(--fnaf-red); }
+        #cam-view { position: absolute; inset: 0; background-size: cover; background-position: center; }
 
-        /* --- HUD --- */
-        .hud { position: fixed; padding: 15px; background: rgba(0,0,0,0.85); border: 2px solid white; z-index: 900; }
-        #p-box { bottom: 20px; left: 20px; font-size: 1.2rem; }
-        #t-box { top: 20px; right: 20px; text-align: right; }
-
-        /* --- TABLET / BLUEPRINT MAP --- */
-        #monitor {
-            position: fixed; bottom: -100%; left: 0; width: 100%; height: 88%;
-            background: #000; transition: bottom 0.3s; z-index: 500;
-            display: flex; border-top: 5px solid #fff;
+        .sys-panel {
+            position: absolute; left: 20px; width: 190px;
+            background: rgba(10, 10, 10, 0.9); border: 2px solid #444; padding: 10px; z-index: 15;
         }
+        #vent-panel { top: 20px; }
+        #lure-panel { top: 120px; }
+        .sys-btn { width: 100%; padding: 8px; background: #222; color: white; border: 1px solid #555; cursor: pointer; font-family: inherit; font-size: 0.7rem; }
 
-        #cam-view { width: 70%; height: 100%; background-size: cover; background-position: center; position: relative; border-right: 5px solid #333; }
-        #cam-label { position: absolute; top: 20px; left: 20px; color: #0f0; background: rgba(0,0,0,0.7); padding: 5px 15px; font-size: 1.5rem; }
-        
-        /* Diddy on cameras */
-        #diddy-camera { 
-            position: absolute; bottom: 5%; right: 15%; height: 85%; width: auto; 
-            display: none; filter: brightness(0.6) contrast(1.1); 
+        /* MAP */
+        #fnaf-map-container { 
+            position: absolute; right: 30px; bottom: 85px; 
+            width: 280px; height: 280px; 
+            background: rgba(0, 0, 0, 0.85); border: 2px solid #555;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 18px;
         }
+        .cam-btn { width: 100%; height: 65px; background: #1a1a1a; color: #fff; border: 1px solid #444; cursor: pointer; font-size: 0.7rem; }
+        .cam-btn.active { background: #d4af37; color: #000; font-weight: bold; border-color: #fff; }
 
-        /* FNAF MAP LAYOUT */
-        #fnaf-map {
-            width: 30%; height: 100%; background: #0c0c0c; position: relative;
-            background-image: radial-gradient(circle, #222 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        .cam-btn {
-            position: absolute; width: 65px; height: 45px;
-            background: #111; color: white; border: 2px solid white;
-            font-size: 0.85rem; font-weight: bold; cursor: pointer; text-align: center; line-height: 45px;
-        }
-        .cam-btn:hover { background: #444; color: var(--gold); border-color: var(--gold); }
-        .cam-btn.active { background: var(--gold); color: black; border-color: white; }
+        /* HUD */
+        .hud { position: fixed; padding: 12px; z-index: 3000; background: rgba(0,0,0,0.85); border: 2px solid #333; font-weight: bold; }
+        #p-box { bottom: 20px; left: 20px; }
+        #o-box { bottom: 20px; right: 20px; color: #00f2ff; }
+        #t-box { top: 20px; right: 20px; }
 
-        /* FNAF-STYLE Layout */
-        #btn-c1 { top: 15%; left: 15%; }
-        #btn-c2 { top: 15%; left: 60%; }
-        #btn-c4 { top: 45%; left: 10%; } 
-        #btn-c5 { top: 45%; left: 65%; } 
-        #btn-c6 { top: 75%; left: 20%; }
-        #btn-c3 { top: 75%; left: 55%; } 
-
-        #flip-trigger {
-            position: fixed; bottom: 0; left: 25%; width: 50%; height: 45px;
-            background: rgba(255,255,255,0.25); z-index: 600; cursor: pointer;
-            text-align: center; line-height: 45px; font-weight: bold; font-size: 1.2rem;
+        #flip-trigger { 
+            position: fixed; bottom: 0; left: 30%; width: 40%; height: 35px; 
+            background: rgba(255,255,255,0.1); z-index: 2500; cursor: pointer; 
+            text-align: center; line-height: 35px; border: 1px solid #fff;
         }
 
-        /* --- JUMPSCARE --- */
-        #scare-screen {
-            position: fixed; inset: 0; background: black; z-index: 2000;
-            display: none; align-items: center; justify-content: center;
+        #elon-desk-btn {
+            position: absolute; bottom: 42%; left: 49%; width: 30px; height: 30px;
+            background: #900; border: 3px solid #111; border-radius: 50%; cursor: pointer; display: none; z-index: 50;
         }
-        #scare-screen img { height: 120%; width: auto; animation: shake 0.05s infinite; }
-        @keyframes shake { 0% {transform: rotate(1deg) scale(1.1)} 50% {transform: rotate(-1deg) scale(1.15)} }
     </style>
 </head>
 <body>
 
-    <div id="crt"></div>
-    <div id="static"></div>
+    <div id="victory-screen">
+        <h1 id="victory-text">5:59</h1>
+    </div>
+
+    <div id="main-menu">
+        <div id="menu-content">
+            <h1>Diddy's<br>Night Shift</h1>
+            <div id="menu-options">
+                <p onclick="startGame(1)">>> New Game</p>
+                <p onclick="continueGame()">>> Continue</p>
+                <p onclick="document.getElementById('info-panel').style.display='block'">>> Info</p>
+            </div>
+        </div>
+        <img id="menu-diddy" src="https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png">
+    </div>
+
+    <div id="info-panel">
+        <h2 style="color:#d4af37">NIGHT SURVIVAL GUIDE</h2><br>
+        <p><strong>N1:</strong> Diddy. He moves to your door (CAM 3). Close the door to stop him.</p>
+        <p><strong>N2:</strong> Joe in Vents. Seal the vent if he reaches CAM 6.</p>
+        <p><strong>N3:</strong> Elon. When power spikes, go to CAM 9 and hit the small red button.</p><br>
+        <button onclick="document.getElementById('info-panel').style.display='none'" style="width:100%; padding:10px; cursor:pointer">CLOSE</button>
+    </div>
 
     <div id="office">
-        <!-- FIXED: NEW DIDDY CUTOUT -->
-        <img id="diddy-at-door" src="https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png">
-        
-        <div id="door-frame">
+        <div class="door-control-case">
+            <span style="font-size:0.6rem">DOOR</span>
+            <div id="door-btn" onclick="toggleDoor()"></div>
+        </div>
+        <div id="door-area">
+            <img id="diddy-at-door" style="position:absolute; height:90%; display:none; z-index:1;" src="https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png">
             <div id="sliding-door"></div>
         </div>
-        
-        <div class="btn-panel">
-            <button id="door-toggle" class="door-btn" onclick="toggleDoor()">DOOR</button>
-        </div>
     </div>
 
-    <!-- HUD -->
-    <div id="p-box" class="hud">
-        Power: <span id="pow">100</span>%<br>
-        <span id="usage-text">Usage: |</span>
-    </div>
+    <div id="p-box" class="hud">Power: <span id="pow">100</span>%</div>
+    <div id="o-box" class="hud">Air: <span id="oxy">100</span>%</div>
+    <div id="t-box" class="hud"><h2 id="clock" style="margin:0">12 AM</h2></div>
 
-    <div id="t-box" class="hud">
-        <h1 id="clock" style="margin:0">12 AM</h1>
-        <div id="night-ui">Night 1</div>
-    </div>
-
-    <!-- MONITOR -->
     <div id="monitor">
         <div id="cam-view">
-            <div id="cam-label">CAM 4</div>
-            <img id="diddy-camera" src="https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png">
+            <button id="elon-desk-btn" onclick="fixElonPower()"></button>
+            <img id="diddy-camera" style="position:absolute; bottom:5%; left:50%; transform:translateX(-50%); height:75%; display:none;" src="https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png">
         </div>
-        <div id="fnaf-map">
-            <button id="btn-c1" class="cam-btn" onclick="setCam(0)">CAM 1</button>
-            <button id="btn-c2" class="cam-btn" onclick="setCam(1)">CAM 2</button>
-            <button id="btn-c3" class="cam-btn" onclick="setCam(2)">CAM 3</button>
-            <button id="btn-c4" class="cam-btn" onclick="setCam(3)">CAM 4</button>
-            <button id="btn-c5" class="cam-btn" onclick="setCam(4)">CAM 5</button>
-            <button id="btn-c6" class="cam-btn" onclick="setCam(5)">CAM 6</button>
+
+        <div id="vent-panel" class="sys-panel">
+            <div id="vent-light" style="width:100%; height:6px; background:#0f0; margin-bottom:8px;"></div>
+            <button class="sys-btn" onclick="toggleVents()">TOGGLE VENTS</button>
+        </div>
+
+        <div id="lure-panel" class="sys-panel">
+            <button id="lure-btn" class="sys-btn" onclick="playLure()" style="color:#0f0">PLAY AUDIO</button>
+            <div id="lure-cd-bar" style="height:4px; background:#0f0; width:100%; margin-top:8px; transition: width 7s linear;"></div>
+        </div>
+
+        <div id="fnaf-map-container">
+            <button class="cam-btn" id="cam7" onclick="setCam(6)">CAM 7</button>
+            <button class="cam-btn" id="cam8" onclick="setCam(7)">CAM 8</button>
+            <button class="cam-btn" id="cam9" onclick="setCam(8)">CAM 9</button>
+            <button class="cam-btn" id="cam4" onclick="setCam(3)">CAM 4</button>
+            <button class="cam-btn" id="cam5" onclick="setCam(4)">CAM 5</button>
+            <button class="cam-btn" id="cam6" onclick="setCam(5)">CAM 6</button>
+            <button class="cam-btn" id="cam1" onclick="setCam(0)">CAM 1</button>
+            <button class="cam-btn" id="cam2" onclick="setCam(1)">CAM 2</button>
+            <div style="text-align:center">
+                <button class="cam-btn" id="cam3" onclick="setCam(2)">CAM 3</button>
+                <span style="color:#0f0; font-size:0.5rem; font-weight:bold">^ YOU</span>
+            </div>
         </div>
     </div>
 
-    <div id="flip-trigger" onclick="toggleMonitor()">▲ MONITOR ▲</div>
-
-    <!-- JUMPSCARE LAYER -->
-    <div id="scare-screen">
-        <img src="https://r2.theaudiodb.com/images/media/artist/cutout/rid3171695285723.png">
-    </div>
+    <div id="flip-trigger" onclick="toggleMonitor()">MONITOR</div>
 
     <script>
+        let power = 100, oxy = 100, hour = 0, currentNight = 1;
+        let isDoorDown = false, isMonUp = false, ventsClosed = false, activeCam = 7, lureReady = true, elonActive = false;
+        let diddyPos = 7; 
+
         const camUrls = [
             'https://www.garypeer.com.au/assets/media/2025/05/relax-and-reconnect-how-to-design-a-living-room-that-feels-like-home/main.jpg',
             'https://images.ctfassets.net/x5dih9iwqm78/6Mq4FEDTN9ThI1bdgvth9k/819c6c1278c08d1fe881a46679aac48f/Fusion_34FSN32603FH24_Kitchen_Samsung_Appliances_June_2024_2.jpg',
-            'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070', // BATHROOM (CAM 3)
-            'https://a-ap.storyblok.com/f/3000704/1220x700/7ee4980ccd/salt-pool-vs-chlorine-pool.png', // POOL (CAM 4)
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9sQ7fK73MXM4oDB6Vu26qxnS6m38O-wHEX75v_tmOu08C-GoT', // SECRET (CAM 5)
-            'https://static01.nyt.com/images/2022/09/18/realestate/13fix-hallway01/oakImage-1662821325754-articleLarge.jpg' // HALLWAY (CAM 6)
+            'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070', // CAM 3
+            'https://a-ap.storyblok.com/f/3000704/1220x700/7ee4980ccd/salt-pool-vs-chlorine-pool.png', // CAM 4
+            'https://i.pinimg.com/736x/e5/d5/4a/e5d54afbd5f91a27ca26bc5583903bbc.jpg', // UPDATED CAM 5
+            'https://static01.nyt.com/images/2022/09/18/realestate/13fix-hallway01/oakImage-1662821325754-articleLarge.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkC4jEOkc322IAPgK02msPSpun6-YpC_qZMw&s',
+            'https://images.unsplash.com/photo-1520996729250-7d888a835cc4?fm=jpg&q=60&w=3000',
+            'https://assets.fixr.com/cost_guides/home-office/home-office-604a2b1525f1e.png'
         ];
 
-        let power = 100;
-        let hour = 0;
-        let night = 1;
-        let isDoorDown = false;
-        let isMonUp = false;
-        let activeCam = 3; 
-
-        let diddyPos = 3; 
-        let attackTimeout = null;
-        let blockCounter = null;
+        function startGame(n) {
+            currentNight = n;
+            document.getElementById('main-menu').style.display = 'none';
+            setCam(7);
+            setInterval(gameTick, 1000);
+            setInterval(clockTick, 45000); 
+            setInterval(aiTick, 7000); 
+        }
 
         function toggleDoor() {
             isDoorDown = !isDoorDown;
             document.getElementById('sliding-door').classList.toggle('closed', isDoorDown);
-            document.getElementById('door-toggle').classList.toggle('active', isDoorDown);
+            document.getElementById('door-btn').classList.toggle('active', isDoorDown);
+        }
+
+        function toggleVents() {
+            ventsClosed = !ventsClosed;
+            document.getElementById('vent-light').style.background = ventsClosed ? "#f00" : "#0f0";
         }
 
         function toggleMonitor() {
             isMonUp = !isMonUp;
             document.getElementById('monitor').style.bottom = isMonUp ? "0" : "-100%";
-            noiseEffect(150);
-            updateCams();
         }
 
         function setCam(id) {
             activeCam = id;
-            document.getElementById('cam-label').innerText = "CAM " + (id + 1);
             document.getElementById('cam-view').style.backgroundImage = `url('${camUrls[id]}')`;
-            document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-c' + (id+1)).classList.add('active');
-            noiseEffect(200);
+            document.querySelectorAll('.cam-btn').forEach(btn => btn.classList.remove('active'));
+            const camIdMap = ["cam1", "cam2", "cam3", "cam4", "cam5", "cam6", "cam7", "cam8", "cam9"];
+            document.getElementById(camIdMap[id]).classList.add('active');
             updateCams();
         }
 
-        function noiseEffect(ms) {
-            const n = document.getElementById('static');
-            n.style.opacity = "0.7";
-            setTimeout(() => n.style.opacity = "0", ms);
+        function playLure() {
+            if (!lureReady || !isMonUp) return;
+            lureReady = false;
+            document.getElementById('lure-cd-bar').style.width = "0%";
+            if (Math.random() < 0.8 && activeCam !== 2) diddyPos = activeCam;
+            setTimeout(() => { lureReady = true; document.getElementById('lure-cd-bar').style.width = "100%"; }, 7000);
         }
 
-        setInterval(() => {
-            if (Math.random() < (0.3 + (night * 0.05))) {
-                let lastPos = diddyPos;
-                if (diddyPos === 3) {
-                    const poolNext = [0, 1, 4, 5];
-                    diddyPos = poolNext[Math.floor(Math.random() * poolNext.length)];
+        function fixElonPower() {
+            elonActive = false;
+            document.getElementById('cam-view').style.filter = "brightness(1)";
+        }
+
+        function gameTick() {
+            let usage = 1 + (isDoorDown?1:0) + (isMonUp?1:0);
+            if (elonActive) usage += 12;
+            power -= (usage * 0.12);
+            document.getElementById('pow').innerText = Math.max(0, Math.floor(power));
+            if (ventsClosed) oxy -= 1.5; else oxy = Math.min(100, oxy + 2);
+            document.getElementById('oxy').innerText = Math.floor(oxy);
+            if (power <= 0 || oxy <= 0) location.reload();
+        }
+
+        function clockTick() {
+            hour++;
+            if (hour === 6) winNight();
+            document.getElementById('clock').innerText = hour + " AM";
+        }
+
+        function winNight() {
+            document.getElementById('victory-screen').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('victory-text').innerText = "6 AM";
+                setTimeout(() => location.reload(), 3000);
+            }, 1000);
+        }
+
+        function aiTick() {
+            if (Math.random() < 0.3) {
+                if (diddyPos === 99) return; 
+                if (diddyPos === 1 || diddyPos === 3) {
+                    diddyPos = 2; 
                 } else if (diddyPos === 2) {
-                    diddyPos = 6;
-                    onDiddyArrive();
-                } else if (diddyPos < 6) {
-                    if (Math.random() < 0.4) {
-                        diddyPos = 2; 
-                    } else {
-                        const roamRooms = [0, 1, 4, 5].filter(r => r !== diddyPos);
-                        diddyPos = roamRooms[Math.floor(Math.random() * roamRooms.length)];
-                    }
-                }
-                if (isMonUp && activeCam === lastPos) noiseEffect(600);
-                updateCams();
-            }
-        }, 6000);
-
-        function onDiddyArrive() {
-            document.getElementById('diddy-at-door').style.display = "block";
-            attackTimeout = setTimeout(() => {
-                if (!isDoorDown) doJumpscare();
-            }, 3000); 
-        }
-
-        setInterval(() => {
-            if (diddyPos === 6) {
-                if (isDoorDown) {
-                    if (!blockCounter) {
-                        blockCounter = setTimeout(() => {
-                            clearTimeout(attackTimeout);
-                            diddyPos = 3; 
-                            document.getElementById('diddy-at-door').style.display = "none";
-                            blockCounter = null;
-                            updateCams();
-                        }, 5000); 
-                    }
+                    diddyPos = 99; 
+                    document.getElementById('diddy-at-door').style.display = "block"; 
+                    setTimeout(() => { 
+                        if (!isDoorDown) location.reload(); 
+                        else { diddyPos = 7; document.getElementById('diddy-at-door').style.display = "none"; }
+                    }, 6000);
                 } else {
-                    clearTimeout(blockCounter);
-                    blockCounter = null;
+                    let next = Math.floor(Math.random() * 9);
+                    if (next !== 2) diddyPos = next; 
                 }
             }
-        }, 100);
+            updateCams();
+        }
 
         function updateCams() {
-            const d = document.getElementById('diddy-camera');
-            if (isMonUp && activeCam === diddyPos && diddyPos < 6) {
-                d.style.display = "block";
-            } else {
-                d.style.display = "none";
-            }
+            document.getElementById('diddy-camera').style.display = (activeCam === diddyPos) ? "block" : "none";
+            document.getElementById('elon-desk-btn').style.display = (activeCam === 8) ? "block" : "none";
         }
-
-        function doJumpscare() {
-            document.getElementById('scare-screen').style.display = "flex";
-            setTimeout(() => { location.reload(); }, 2000);
-        }
-
-        setInterval(() => {
-            let usage = 1 + (isDoorDown ? 1 : 0) + (isMonUp ? 1 : 0);
-            power -= (usage * 0.1);
-            document.getElementById('pow').innerText = Math.floor(power);
-            document.getElementById('usage-text').innerText = "Usage: " + "|".repeat(usage);
-            if (power <= 0) location.reload();
-        }, 1000);
-
-        setInterval(() => {
-            hour++;
-            if (hour === 6) { 
-                alert("6 AM: SUCCESS!"); 
-                location.reload(); 
-            }
-            document.getElementById('clock').innerText = (hour === 0 ? "12" : hour) + " AM";
-        }, 60000);
-
-        setCam(3);
     </script>
 </body>
 </html>
